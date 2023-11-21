@@ -16,8 +16,8 @@ class Student(models.Model):
         return f"{self.name} | {(self.Subscribers+self.Videos+self.Views)}"
 
 # admin.py
-from django.contrib import admin
-from .models import Student
+''from django.contrib import admin
+from .models import Student''
 
 # Register your models here.
 @admin.register(Student)
