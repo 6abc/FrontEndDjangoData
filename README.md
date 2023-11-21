@@ -19,8 +19,8 @@ class Student(models.Model):
 
 # admin.py
 ```sh
-''from django.contrib import admin
-from .models import Student''
+from django.contrib import admin
+from .models import Student
 
 # Register your models here.
 @admin.register(Student)
