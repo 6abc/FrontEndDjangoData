@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Rename Command Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      width: 300px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    .output {
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    .message {
+      color: green;
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>File Rename Command Generator</h2>
+  <input type="text" id="fileInput" placeholder="Enter file name (e.g., DATA.csv)" />
+  <button onclick="generateCommand()">Generate Command</button>
+  <div class="output" id="outputCommand"></div>
+  <button onclick="copyToClipboard()">Copy to Clipboard</button>
+  <button onclick="resetFields()">Reset</button>
+  <div class="message" id="confirmationMessage"></div>
+</div>
+
+<script>
+  function generateCommand() {
+    const fileName = document.getElementById('fileInput').value;
+    const command = `mv ${fileName} ${fileName}.back`;
+    document.getElementById('outputCommand').textContent = command;
+    document.getElementById('confirmationMessage').textContent = '';  // Clear any previous message
+  }
+
+  function copyToClipboard() {
+    const commandText = document.getElementById('outputCommand').textContent;
+    navigator.clipboard.writeText(commandText)
+      .then(() => {
+        document.getElementById('confirmationMessage').textContent = 'Command copied to clipboard!';
+      })
+      .catch(err => {
+        document.getElementById('confirmationMessage').textContent = 'Failed to copy text';
+      });
+  }
+
+  function resetFields() {
+    document.getElementById('fileInput').value = '';             // Clear input field
+    document.getElementById('outputCommand').textContent = '';    // Clear output command
+    document.getElementById('confirmationMessage').textContent = ''; // Clear confirmation message
+  }
+</script>
+
+</body>
+</html>
