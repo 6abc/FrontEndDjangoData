@@ -3,66 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>File Rename Command Generator</title>
+  <title>File Command Generator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
+      background-color: #f6f8fa;
       margin: 0;
+      padding: 0;
     }
+
     .container {
-      width: 300px;
-      text-align: center;
+      width: 80vw;
+      background-color: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      padding: 20px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 0 auto;
     }
-    input, button {
+
+    .input-field, .button {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-    }
-    .output {
-      padding: 10px;
-      background-color: #f0f0f0;
-      border-radius: 4px;
       margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #d0d7de;
+      font-size: 14px;
     }
+
+    .button {
+      background-color: #2ea44f;
+      color: white;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+    }
+    .button:active {
+      background-color: #218838;
+    }
+
+    .output-box {
+      position: relative;
+      background-color: #f6f8fa;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #24292f;
+      margin-top: 10px;
+      overflow-x: auto;
+      white-space: pre-line;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #24292f;
+    }
+
     .message {
       color: green;
       font-weight: bold;
-      margin-top: 10px;
       font-size: 14px;
+      margin-top: 10px;
+      text-align: left;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h2>File Rename Command Generator</h2>
-  <input type="text" id="fileInput" placeholder="Enter file name (e.g., DATA.csv)" />
-  <button onclick="generateCommand()">Generate Command</button>
-  <div class="output" id="outputCommand"></div>
-  <button onclick="copyToClipboard()">Copy to Clipboard</button>
-  <button onclick="resetFields()">Reset</button>
+  <h2 style="font-size: 18px; color: #24292f;">File Command Generator</h2>
+  
+  <!-- Input Fields for Filenames -->
+  <input type="text" id="fileInput1" class="input-field" placeholder="Enter source file name (e.g., 20241022.csv)" />
+  <input type="text" id="fileInput2" class="input-field" placeholder="Enter destination file name (e.g., 20241023.csv)" />
+  
+  <!-- Generate Command Button -->
+  <button class="button" onclick="generateCommand()">Generate Commands</button>
+  
+  <!-- Confirmation Message -->
   <div class="message" id="confirmationMessage"></div>
+  
+  <!-- Output Command Box with Copy Button -->
+  <div class="output-box" id="outputCommand">
+    <button class="copy-button" onclick="copyToClipboard()">Copy</button>
+    <pre id="commandText"></pre> <!-- Keeps multiline format -->
+  </div>
+  
+  <!-- Reset Button -->
+  <button class="button" onclick="resetFields()" style="background-color: #d73a49; margin-top: 10px;">Reset</button>
 </div>
 
 <script>
   function generateCommand() {
-    const fileName = document.getElementById('fileInput').value;
-    const command = `mv ${fileName} ${fileName}.back`;
-    document.getElementById('outputCommand').textContent = command;
-    document.getElementById('confirmationMessage').textContent = '';  // Clear any previous message
+    const fileName1 = document.getElementById('fileInput1').value;
+    const fileName2 = document.getElementById('fileInput2').value;
+
+    // Generate the multiline command
+    const command = `cp ${fileName1} ${fileName2} /home/user/data\nrm ${fileName1} ${fileName2} /home/user/data`;
+    
+    document.getElementById('commandText').textContent = command;  // Display the multiline command
+    document.getElementById('confirmationMessage').textContent = '';  // Clear previous messages
   }
 
   function copyToClipboard() {
-    const commandText = document.getElementById('outputCommand').textContent;
+    const commandText = document.getElementById('commandText').textContent;
     navigator.clipboard.writeText(commandText)
       .then(() => {
-        document.getElementById('confirmationMessage').textContent = 'Command copied to clipboard!';
+        document.getElementById('confirmationMessage').textContent = 'Commands copied to clipboard!';
       })
       .catch(err => {
         document.getElementById('confirmationMessage').textContent = 'Failed to copy text';
@@ -70,8 +131,9 @@
   }
 
   function resetFields() {
-    document.getElementById('fileInput').value = '';             // Clear input field
-    document.getElementById('outputCommand').textContent = '';    // Clear output command
+    document.getElementById('fileInput1').value = '';               // Clear source input field
+    document.getElementById('fileInput2').value = '';               // Clear destination input field
+    document.getElementById('commandText').textContent = '';       // Clear output command
     document.getElementById('confirmationMessage').textContent = ''; // Clear confirmation message
   }
 </script>
