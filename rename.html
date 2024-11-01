@@ -4,110 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>File Command Generator</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f6f8fa;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      width: 80vw;
-      background-color: #ffffff;
-      border: 1px solid #d0d7de;
-      border-radius: 6px;
-      padding: 20px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      margin: 0 auto;
-    }
-
-    .input-field, .button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 6px;
-      border: 1px solid #d0d7de;
-      font-size: 14px;
-    }
-
-    .button {
-      background-color: #2ea44f;
-      color: white;
-      cursor: pointer;
-      border: none;
-      font-weight: bold;
-    }
-    .button:active {
-      background-color: #218838;
-    }
-
-    .output-box {
-      position: relative;
-      background-color: #f6f8fa;
-      border: 1px solid #d0d7de;
-      border-radius: 6px;
-      padding: 10px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #24292f;
-      margin-top: 10px;
-      overflow-x: auto;
-      white-space: pre-line;
-    }
-
-    .copy-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #ffffff;
-      border: 1px solid #d0d7de;
-      border-radius: 6px;
-      padding: 5px 10px;
-      font-size: 12px;
-      cursor: pointer;
-      color: #24292f;
-    }
-
-    .message {
-      color: green;
-      font-weight: bold;
-      font-size: 14px;
-      margin-top: 10px;
-      text-align: left;
-    }
-  </style>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Remix Icon CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light d-flex justify-content-center align-items-center vh-100">
 
-<div class="container">
-  <h2 style="font-size: 18px; color: #24292f;">File Command Generator</h2>
+<div class="container bg-white border rounded p-4 shadow-sm" style="max-width: 600px;">
+  <h2 class="text-center text-dark mb-4">File Command Generator</h2>
   
   <!-- Input Fields for Filenames -->
-  <input type="text" id="fileInput1" class="input-field" placeholder="Enter source file name (e.g., 20241022.csv)" />
-  <input type="text" id="fileInput2" class="input-field" placeholder="Enter destination file name (e.g., 20241023.csv)" />
+  <input type="text" id="fileInput1" class="form-control mb-3" placeholder="Enter source file name (e.g., 20241022.csv)" />
+  <input type="text" id="fileInput2" class="form-control mb-3" placeholder="Enter destination file name (e.g., 20241023.csv)" />
   
   <!-- Generate Command Button -->
-  <button class="button" onclick="generateCommand()">Generate Commands</button>
-  
-  <!-- Confirmation Message -->
-  <div class="message" id="confirmationMessage"></div>
+  <button class="btn btn-success w-100 mb-3" onclick="generateCommand()">Generate Commands</button>
   
   <!-- Output Command Box with Copy Button -->
-  <div class="output-box" id="outputCommand">
-    <button class="copy-button" onclick="copyToClipboard()">Copy</button>
-    <pre id="commandText"></pre> <!-- Keeps multiline format -->
+  <div class="position-relative bg-light border rounded p-3 mt-3" id="outputCommand">
+    <button class="btn btn-sm position-absolute end-0 top-0 m-2" 
+            onclick="copyToClipboard()" 
+            id="copyButton"
+            data-bs-toggle="tooltip"
+            title="Copy to Clipboard">
+      <i class="ri-file-copy-line" id="copyIcon"></i>
+    </button>
+    <pre id="commandText" class="m-0"></pre> <!-- Keeps multiline format -->
   </div>
   
   <!-- Reset Button -->
-  <button class="button" onclick="resetFields()" style="background-color: #d73a49; margin-top: 10px;">Reset</button>
+  <button class="btn btn-danger w-100 mt-3" onclick="resetFields()">Reset</button>
 </div>
 
+<!-- Bootstrap JS (with Popper for tooltips) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
+  // Initialize tooltips
+  document.addEventListener('DOMContentLoaded', function () {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+  });
+
   function generateCommand() {
     const fileName1 = document.getElementById('fileInput1').value;
     const fileName2 = document.getElementById('fileInput2').value;
@@ -116,17 +59,29 @@
     const command = `cp ${fileName1} ${fileName2} /home/user/data\nrm ${fileName1} ${fileName2} /home/user/data`;
     
     document.getElementById('commandText').textContent = command;  // Display the multiline command
-    document.getElementById('confirmationMessage').textContent = '';  // Clear previous messages
+    document.getElementById('copyIcon').className = 'ri-file-copy-line'; // Reset copy icon
   }
 
   function copyToClipboard() {
     const commandText = document.getElementById('commandText').textContent;
     navigator.clipboard.writeText(commandText)
       .then(() => {
-        document.getElementById('confirmationMessage').textContent = 'Commands copied to clipboard!';
+        // Change icon on copy
+        document.getElementById('copyIcon').className = 'ri-clipboard-fill'; 
+        
+        // Update tooltip text to "Copied!"
+        const copyButton = document.getElementById('copyButton');
+        const tooltip = bootstrap.Tooltip.getInstance(copyButton);
+        tooltip.setContent({ '.tooltip-inner': 'Copied!' });
+        tooltip.show();
+        
+        // Revert tooltip text to "Copy to Clipboard" after a short delay
+        setTimeout(() => {
+          tooltip.setContent({ '.tooltip-inner': 'Copy to Clipboard' });
+        }, 1000);
       })
       .catch(err => {
-        document.getElementById('confirmationMessage').textContent = 'Failed to copy text';
+        alert('Failed to copy text');
       });
   }
 
@@ -134,7 +89,7 @@
     document.getElementById('fileInput1').value = '';               // Clear source input field
     document.getElementById('fileInput2').value = '';               // Clear destination input field
     document.getElementById('commandText').textContent = '';       // Clear output command
-    document.getElementById('confirmationMessage').textContent = ''; // Clear confirmation message
+    document.getElementById('copyIcon').className = 'ri-file-copy-line'; // Reset copy icon to original
   }
 </script>
 
