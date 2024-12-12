@@ -67,3 +67,26 @@ urlpatterns = [
     path('', views.student_list, name="home"),  # Handle GET requests to the root URL
 ]
 ```
+
+# Command and Description
+
+| Django Template Tags | Description |
+| :--- | :--- |
+| `{% load_static %}` | It loads static files |
+| `{% static 'assets/js/app.js' %}` | It loads static assets files |
+| `{% extends base.html %}` |  It add base.html files |
+| `{% include navbar.html %}` | It includes navbar.html files |
+| `{% url '<NameFromUrls.py' %}` | It add url location |
+| `{% block title %}{% endblock %}` | Allow title for each page |
+| `{% block content %}{% endblock %}` | Allow adding content in base.html |
+| `{% if user.is_authenticated %} <a href="{% url 'logout' %}">Logout</a> {% else %} <a href="{% url 'login' %}">Login</a> {% endif %}` | If Condition for User Specific Data |
+| `{% if x in view_dict %} {{x.<model_var>}} {% empty %} NoData! {% endif %}` | If Condition and accesing django model data |
+
+```
+{% extends "base.html" %}
+{% load static %}
+{% block title %}K8LO | Home{% endblock %}
+{% block content %}
+  <h1>Content</h1>
+{% endblock content %} 
+```
